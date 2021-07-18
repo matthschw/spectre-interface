@@ -11,31 +11,6 @@ import java.util.regex.Pattern;
 
 public class SpectreFactory {
 
-  public static void main(String[] args) throws IOException {
-
-    Runtime rt = Runtime.getRuntime();
-    String[] commands = { "spectre", "-W" };
-    Process proc = rt.exec(commands);
-
-    BufferedReader stdError = new BufferedReader(
-        new InputStreamReader(proc.getErrorStream()));
-
-    String s;
-
-    s = stdError.readLine();
-
-    Pattern pattern = Pattern
-        .compile("sub-version[  ]+[0-9]+.[0-9]+.[0-9]+.[0-9]+.isr[0-9]+");
-
-    System.out.println(s);
-
-    Matcher matcher = pattern.matcher(s);
-    boolean matchFound = matcher.find();
-
-    System.out.println(matchFound);
-
-  }
-
   private File simDirectory;
 
   private SpectreFactory(File simDirectory) {
@@ -48,10 +23,12 @@ public class SpectreFactory {
 
     String[] commands = { SpectreSession.CMD_TOOL, "-W" };
     Process proc = null;
+    
     try {
       proc = rt.exec(commands);
       BufferedReader stdError = new BufferedReader(
           new InputStreamReader(proc.getErrorStream()));
+      
       String retval = stdError.readLine();
 
       Pattern pattern = Pattern
@@ -59,9 +36,7 @@ public class SpectreFactory {
 
       Matcher matcher = pattern.matcher(retval);
 
-      boolean matchFound = matcher.find();
-
-      if (matchFound) {
+      if (matcher.find()) {
         if (simDirectory.isDirectory() && simDirectory.canRead()
             && simDirectory.canWrite()) {
 

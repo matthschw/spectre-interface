@@ -19,7 +19,7 @@ public class SpectreSessionTest {
     List<NutmegPlot> plots;
     session.start();
 
-    for (int i = 0; i < 12; i++) {
+    for (int i = 0; i < 150; i++) {
       session.setValueAttribute("VI", i);
       plots = session.simulate();
       System.out.println(i + " - " + plots.size());

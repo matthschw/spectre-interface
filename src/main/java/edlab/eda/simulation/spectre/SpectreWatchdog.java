@@ -6,8 +6,8 @@ public class SpectreWatchdog extends Thread {
 
   private SpectreSession session;
 
-  private static final long WATCHDOG_DEFAULT_CHECK_TIME = 30;
-  private static final long WATCHDOG_DEFAULT_WAIT_TIME = 30;
+  private static final long WATCHDOG_DEFAULT_CHECK_TIME = 100;
+  private static final long WATCHDOG_DEFAULT_WAIT_TIME = 300000;
 
   private long watchdogWaitTime;
   private boolean killed = false;
@@ -41,8 +41,8 @@ public class SpectreWatchdog extends Thread {
       now = new Date();
       lastActivity = this.session.getLastActivity();
 
-      if (contineWatching && (lastActivity == null || now.getTime()
-          - lastActivity.getTime() > 1000 * this.watchdogWaitTime)) {
+      if (contineWatching && (lastActivity == null
+          || now.getTime() - lastActivity.getTime() > this.watchdogWaitTime)) {
 
         if (!killed) {
           this.session.stop();
