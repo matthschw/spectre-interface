@@ -1,0 +1,54 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>edlab.eda</groupId>
+	<artifactId>simulation.spectre</artifactId>
+	<version>0.0.1</version>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>8</maven.compiler.source>
+		<maven.compiler.target>8</maven.compiler.target>
+	</properties>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<release>8</release>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math3</artifactId>
+			<version>3.2</version>
+		</dependency>
+		<dependency>
+			<groupId>edlab.eda.reader</groupId>
+			<artifactId>nutmeg</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.expectit</groupId>
+			<artifactId>expectit-core</artifactId>
+			<version>0.9.0</version>
+		</dependency>
+	</dependencies>
+		<organization>
+		<name>Electronics &amp; Drives</name>
+		<url>https://www.electronics-and-drives.de/</url>
+	</organization>
+	<developers>
+		<developer>
+			<id>schweikardt</id>
+			<name>Matthias Schweikardt</name>
+			<email>matthias.schweikardt@reutlingen-university.de</email>
+			<organization>Electronics &amp; Drives</organization>
+			<organizationUrl>https://www.electronics-and-drives.de/</organizationUrl>
+		</developer>
+	</developers>
+</project>
