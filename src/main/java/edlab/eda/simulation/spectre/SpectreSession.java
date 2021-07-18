@@ -34,7 +34,7 @@ public class SpectreSession {
     NUTBIN, NUTASCII
   };
 
-  private static final String CMD_TOOL = "spectre";
+   static final String CMD_TOOL = "spectre";
 
   private String netlist;
   private MODE mode;
@@ -45,8 +45,8 @@ public class SpectreSession {
   private int noOfThreads;
 
   private Expect expect = null;
-  private Map<String, String> parameterMapping;
-  private Map<String, Object> parameterValues;
+  private Map<String, String> parameterMapping = new HashMap<String, String>();
+  private Map<String, Object> parameterValues = new HashMap<String, Object>();
   private Date lastActivity = null;
   private SpectreWatchdog watchdog;
 
@@ -62,12 +62,11 @@ public class SpectreSession {
     try {
 
       Path path = Files.createTempDirectory(simDir.toPath(),
-          "spectre" + username + "_");
+          "spectre" + "_" + username + "_");
 
       this.workingDir = path.toFile();
 
     } catch (IOException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
 
@@ -255,8 +254,7 @@ public class SpectreSession {
         }
 
         this.lastActivity = new Date();
-        this.watchdog = new SpectreWatchdog(this);
-        this.watchdog.start();
+
       }
 
       if (rawFile.exists()) {
@@ -340,11 +338,17 @@ public class SpectreSession {
   }
 
   public boolean stop() {
+
     communicate(SpectreInteractiveProtocol
         .formatCommand(new String[] { SpectreInteractiveProtocol.CMD_QUIT }));
 
+    try {
+      this.expect.close();
+    } catch (IOException e) {
+    }
+
     if (this.process != null) {
-      this.process.destroy();
+      this.process.destroyForcibly();
     }
 
     this.lastActivity = null;
@@ -357,10 +361,6 @@ public class SpectreSession {
     this.watchdog = null;
     this.process = null;
 
-    try {
-      this.expect.close();
-    } catch (IOException e) {
-    }
 
     return true;
   }
