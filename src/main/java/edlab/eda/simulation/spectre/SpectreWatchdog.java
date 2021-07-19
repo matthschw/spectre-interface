@@ -7,18 +7,15 @@ public class SpectreWatchdog extends Thread {
   private SpectreSession session;
 
   private static final long WATCHDOG_DEFAULT_CHECK_TIME = 100;
-  private static final long WATCHDOG_DEFAULT_WAIT_TIME = 300000;
+  static final long WATCHDOG_DEFAULT_WAIT_TIME = 300000;
 
   private long watchdogWaitTime;
   private boolean killed = false;
 
-  public SpectreWatchdog(SpectreSession session) {
+  public SpectreWatchdog(SpectreSession session, SpectreFactory factory) {
     this.session = session;
-    this.watchdogWaitTime = WATCHDOG_DEFAULT_WAIT_TIME;
+    this.watchdogWaitTime = factory.getWatchdogWaitTime();
 
-    if (this.watchdogWaitTime <= 0) {
-      this.watchdogWaitTime = WATCHDOG_DEFAULT_WAIT_TIME;
-    }
   }
 
   @Override

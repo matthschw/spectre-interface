@@ -12,6 +12,8 @@ import java.util.regex.Pattern;
 public class SpectreFactory {
 
   private File simDirectory;
+  private long watchdogWaitTime = SpectreWatchdog.WATCHDOG_DEFAULT_WAIT_TIME;
+  private String simPrefix = null;
 
   private SpectreFactory(File simDirectory) {
     this.simDirectory = simDirectory;
@@ -23,12 +25,12 @@ public class SpectreFactory {
 
     String[] commands = { SpectreSession.CMD_TOOL, "-W" };
     Process proc = null;
-    
+
     try {
       proc = rt.exec(commands);
       BufferedReader stdError = new BufferedReader(
           new InputStreamReader(proc.getErrorStream()));
-      
+
       String retval = stdError.readLine();
 
       Pattern pattern = Pattern
@@ -77,5 +79,23 @@ public class SpectreFactory {
       e.printStackTrace();
       return null;
     }
+  }
+
+  public long getWatchdogWaitTime() {
+    return watchdogWaitTime;
+  }
+
+  public void setWatchdogWaitTime(long watchdogWaitTime) {
+    if (watchdogWaitTime >= 1000) {
+      this.watchdogWaitTime = watchdogWaitTime;
+    }
+  }
+
+  public String getSimPrefix() {
+    return simPrefix;
+  }
+
+  public void setSimPrefix(String simPrefix) {
+    this.simPrefix = simPrefix;
   }
 }

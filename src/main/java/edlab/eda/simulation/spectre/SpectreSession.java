@@ -34,8 +34,9 @@ public class SpectreSession {
     NUTBIN, NUTASCII
   };
 
-   static final String CMD_TOOL = "spectre";
+  static final String CMD_TOOL = "spectre";
 
+  private SpectreFactory factory;
   private String netlist;
   private MODE mode;
   private Process process = null;
@@ -52,17 +53,30 @@ public class SpectreSession {
 
   private Set<File> includeDirectories = new HashSet<File>();
 
-  private SpectreSession(File simDir) {
+  private SpectreSession(SpectreFactory factory, String name) {
 
+    this.factory = factory;
     this.mode = MODE.BIT64;
     this.noOfThreads = 1;
 
     String username = System.getProperty("user.name");
 
+    String dirName = "";
+
+    if (factory.getSimPrefix() != null) {
+      dirName += factory.getSimPrefix() + "_";
+    }
+
+    if (name != null) {
+      dirName += name + "_";
+    }
+
+    dirName += "spectre" + "_" + username + "_";
+
     try {
 
-      Path path = Files.createTempDirectory(simDir.toPath(),
-          "spectre" + "_" + username + "_");
+      Path path = Files.createTempDirectory(factory.getSimDirectory().toPath(),
+          dirName);
 
       this.workingDir = path.toFile();
 
@@ -195,7 +209,7 @@ public class SpectreSession {
         }
 
         this.lastActivity = new Date();
-        this.watchdog = new SpectreWatchdog(this);
+        this.watchdog = new SpectreWatchdog(this, this.factory);
         this.watchdog.start();
 
       } catch (IOException e) {
@@ -361,7 +375,6 @@ public class SpectreSession {
     this.watchdog = null;
     this.process = null;
 
-
     return true;
   }
 
@@ -396,18 +409,18 @@ public class SpectreSession {
     }
 
     this.lastActivity = new Date();
-    this.watchdog = new SpectreWatchdog(this);
+    this.watchdog = new SpectreWatchdog(this, this.factory);
     this.watchdog.start();
 
     return retval;
   }
 
   public static SpectreSession getSession(SpectreFactory factory) {
-    return new SpectreSession(factory.getSimDirectory());
+    return new SpectreSession(factory, null);
   }
 
   public static SpectreSession getSession(String name, SpectreFactory factory) {
-    return new SpectreSession(factory.getSimDirectory());
+    return new SpectreSession(factory, name);
   }
 
 }
