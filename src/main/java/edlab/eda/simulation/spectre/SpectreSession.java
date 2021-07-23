@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import edlab.eda.reader.nutmeg.NutReader;
 import edlab.eda.reader.nutmeg.NutmegPlot;
@@ -201,6 +202,8 @@ public class SpectreSession {
         expect = new ExpectBuilder().withInputs(this.process.getInputStream())
             .withOutput(this.process.getOutputStream()).withExceptionOnFailure()
             .build();
+        
+        expect.withTimeout(1000000, TimeUnit.MINUTES);
 
         expect.expect(SpectreInteractiveProtocol.NEXT_COMMAND);
 
