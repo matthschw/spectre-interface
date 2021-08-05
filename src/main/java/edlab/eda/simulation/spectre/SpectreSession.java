@@ -422,5 +422,19 @@ public class SpectreSession {
   public static SpectreSession getSession(String name, SpectreFactory factory) {
     return new SpectreSession(factory, name);
   }
+  
+  /**
+   * Load a resource
+   * 
+   * @param fileName File Name of the Resource
+   * @return Path to the resource
+   */
+  public String getResourcePath(String fileName) {
+
+    // The class loader that loaded the class
+    ClassLoader classLoader = getClass().getClassLoader();
+
+    return classLoader.getResource(fileName).getPath();
+  }
 
 }

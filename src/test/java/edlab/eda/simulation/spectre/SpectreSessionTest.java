@@ -35,9 +35,10 @@ public class SpectreSessionTest {
     if (session == null) {
       fail("Cannot create session");
     }
-
+    
+    
     session.setNetlist(
-        SpectreFactory.readFile(new File("./src/test/resources/input.scs")));
+        SpectreFactory.readFile(new File(session.getResourcePath("input.scs"))));
 
     List<NutmegPlot> plots;
 

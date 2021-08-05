@@ -15,7 +15,6 @@ public class SpectreWatchdog extends Thread {
   public SpectreWatchdog(SpectreSession session, SpectreFactory factory) {
     this.session = session;
     this.watchdogWaitTime = factory.getWatchdogWaitTime();
-
   }
 
   @Override
