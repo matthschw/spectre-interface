@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import edlab.eda.reader.nutmeg.NutReader;
 import edlab.eda.reader.nutmeg.NutmegPlot;
@@ -75,8 +76,7 @@ public class SpectreSession {
 
     try {
 
-      Path path = Files.createTempDirectory(factory.getSimDirectory().toPath(),
-          dirName);
+      Path path = Files.createTempDirectory(factory.getSimDirectory().toPath(), dirName);
 
       this.workingDir = path.toFile();
 
@@ -84,8 +84,7 @@ public class SpectreSession {
       e.printStackTrace();
     }
 
-    rawFile = new File(workingDir.toString() + "/" + NL_FILE_NAME + "."
-        + RAW_FILE_NAME_EXTENTION);
+    rawFile = new File(workingDir.toString() + "/" + NL_FILE_NAME + "." + RAW_FILE_NAME_EXTENTION);
   }
 
   private boolean writeNetlist() {
@@ -128,8 +127,7 @@ public class SpectreSession {
   }
 
   private String getNetlistPath() {
-    return workingDir.getAbsolutePath() + "/" + NL_FILE_NAME + "."
-        + NL_FILE_NAME_EXTENTION;
+    return workingDir.getAbsolutePath() + "/" + NL_FILE_NAME + "." + NL_FILE_NAME_EXTENTION;
   }
 
   private String getNetlistName() {
@@ -188,22 +186,18 @@ public class SpectreSession {
 
     if (!isRunning()) {
       try {
-        this.process = Runtime.getRuntime().exec(getCmd() + "\n", null,
-            workingDir);
+        this.process = Runtime.getRuntime().exec(getCmd() + "\n", null, workingDir);
 
       } catch (IOException e) {
-        System.err.println(
-            "Unable to execute simulator" + " with error:\n" + e.getMessage());
+        System.err.println("Unable to execute simulator" + " with error:\n" + e.getMessage());
         return false;
       }
 
       try {
         expect = new ExpectBuilder().withInputs(this.process.getInputStream())
-            .withOutput(this.process.getOutputStream()).withExceptionOnFailure()
-            .build();
+            .withOutput(this.process.getOutputStream()).withExceptionOnFailure().build().withTimeout(1, TimeUnit.HOURS);
 
         expect.expect(SpectreInteractiveProtocol.NEXT_COMMAND);
-
         for (String param : this.parameterValues.keySet()) {
           this.setValueAttribute(param, this.parameterValues.get(param));
         }
@@ -214,8 +208,7 @@ public class SpectreSession {
 
       } catch (IOException e) {
 
-        System.err.println(
-            "Unable to execute expect" + " with error:\n" + e.getMessage());
+        System.err.println("Unable to execute expect" + " with error:\n" + e.getMessage());
 
         this.process.destroy();
         return false;
@@ -240,9 +233,8 @@ public class SpectreSession {
         return plots;
       }
 
-      String res = communicate(SpectreInteractiveProtocol
-          .formatCommand(new String[] { SpectreInteractiveProtocol.CMD_RUN,
-              SpectreInteractiveProtocol.formatComString("all") }));
+      String res = communicate(SpectreInteractiveProtocol.formatCommand(
+          new String[] { SpectreInteractiveProtocol.CMD_RUN, SpectreInteractiveProtocol.formatComString("all") }));
 
       res = res.trim();
 
@@ -288,18 +280,15 @@ public class SpectreSession {
 
     if (!this.parameterMapping.containsKey(parameter)) {
       if (!readParameterIdentififer(parameter)) {
-        System.out.println(
-            "Parameter=" + parameter + " is not defined in the netlist");
+        System.out.println("Parameter=" + parameter + " is not defined in the netlist");
         return false;
       }
     }
 
-    String res = communicate(SpectreInteractiveProtocol.formatCommand(
-        new String[] { SpectreInteractiveProtocol.CMD_SET_ATTRIBUTE,
-            SpectreInteractiveProtocol
-                .formatComString(this.parameterMapping.get(parameter)),
-            SpectreInteractiveProtocol.formatComString("value"),
-            value.toString() }));
+    String res = communicate(
+        SpectreInteractiveProtocol.formatCommand(new String[] { SpectreInteractiveProtocol.CMD_SET_ATTRIBUTE,
+            SpectreInteractiveProtocol.formatComString(this.parameterMapping.get(parameter)),
+            SpectreInteractiveProtocol.formatComString("value"), value.toString() }));
 
     res = res.trim();
 
@@ -314,8 +303,7 @@ public class SpectreSession {
   private boolean setResultDir() {
 
     String res = communicate(SpectreInteractiveProtocol.formatCommand(
-        new String[] { SpectreInteractiveProtocol.CMD_SET_RES_DIR,
-            SpectreInteractiveProtocol.formatComString("./") }));
+        new String[] { SpectreInteractiveProtocol.CMD_SET_RES_DIR, SpectreInteractiveProtocol.formatComString("./") }));
     res = res.trim();
 
     if (res.equals(SpectreInteractiveProtocol.RTN_TRUE)) {
@@ -327,14 +315,11 @@ public class SpectreSession {
 
   private boolean readParameterIdentififer(String parameter) {
 
-    String res = communicate(
-        SpectreInteractiveProtocol
-            .formatCommand(
-                new String[] { SpectreInteractiveProtocol.CMD_GET_PARAMETER,
-                    SpectreInteractiveProtocol.formatCommand(new String[] {
-                        SpectreInteractiveProtocol.CMD_GET_CIRCUT,
-                        SpectreInteractiveProtocol.formatComString("") }),
-                    SpectreInteractiveProtocol.formatComString(parameter) }));
+    String res = communicate(SpectreInteractiveProtocol.formatCommand(new String[] {
+        SpectreInteractiveProtocol.CMD_GET_PARAMETER,
+        SpectreInteractiveProtocol.formatCommand(
+            new String[] { SpectreInteractiveProtocol.CMD_GET_CIRCUT, SpectreInteractiveProtocol.formatComString("") }),
+        SpectreInteractiveProtocol.formatComString(parameter) }));
 
     if (res != null) {
 
@@ -353,8 +338,7 @@ public class SpectreSession {
 
   public boolean stop() {
 
-    communicate(SpectreInteractiveProtocol
-        .formatCommand(new String[] { SpectreInteractiveProtocol.CMD_QUIT }));
+    communicate(SpectreInteractiveProtocol.formatCommand(new String[] { SpectreInteractiveProtocol.CMD_QUIT }));
 
     try {
       this.expect.close();
@@ -380,8 +364,8 @@ public class SpectreSession {
 
   @SuppressWarnings("unused")
   private int readPid() {
-    String res = communicate(SpectreInteractiveProtocol.formatCommand(
-        new String[] { SpectreInteractiveProtocol.CMD_GET_PID }));
+    String res = communicate(
+        SpectreInteractiveProtocol.formatCommand(new String[] { SpectreInteractiveProtocol.CMD_GET_PID }));
 
     if (res == null) {
       return -1;
@@ -402,8 +386,7 @@ public class SpectreSession {
     try {
 
       this.expect.send(cmd + "\n");
-      retval = expect.expect(SpectreInteractiveProtocol.NEXT_COMMAND)
-          .getBefore();
+      retval = expect.expect(SpectreInteractiveProtocol.NEXT_COMMAND).getBefore();
 
     } catch (Exception e) {
     }
