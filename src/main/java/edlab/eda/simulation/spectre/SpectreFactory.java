@@ -45,7 +45,7 @@ public class SpectreFactory {
       if (matcher.find()) {
         if (simDirectory.isDirectory() && simDirectory.canRead()
             && simDirectory.canWrite()) {
-        	System.err.println(retval);
+
           return new SpectreFactory(simDirectory);
 
         } else {
