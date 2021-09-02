@@ -32,16 +32,20 @@ public class SpectreFactory {
           new InputStreamReader(proc.getErrorStream()));
 
       String retval = stdError.readLine();
+      
+      
 
       Pattern pattern = Pattern
-          .compile("sub-version[  ]+[0-9]+.[0-9]+.[0-9]+.[0-9]+.isr[0-9]+");
+          .compile("sub-version[  ]+[0-9]+.[0-9]+.[0-9]+.[0-9]");
 
       Matcher matcher = pattern.matcher(retval);
+      
+      
 
       if (matcher.find()) {
         if (simDirectory.isDirectory() && simDirectory.canRead()
             && simDirectory.canWrite()) {
-
+        	System.err.println(retval);
           return new SpectreFactory(simDirectory);
 
         } else {
