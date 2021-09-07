@@ -33,15 +33,11 @@ public class SpectreFactory {
 
       String retval = stdError.readLine();
       
-      
-
       Pattern pattern = Pattern
           .compile("sub-version[  ]+[0-9]+.[0-9]+.[0-9]+.[0-9]");
 
       Matcher matcher = pattern.matcher(retval);
       
-      
-
       if (matcher.find()) {
         if (simDirectory.isDirectory() && simDirectory.canRead()
             && simDirectory.canWrite()) {
